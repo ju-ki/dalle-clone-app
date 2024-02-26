@@ -1,0 +1,8 @@
+{
+    "restartable": "rs",
+    "watch": ["."],
+    "ext": "ts,json",
+    "execMap": {
+        "ts": "node --no-warnings --loader ts-node/esm"
+    }
+}
