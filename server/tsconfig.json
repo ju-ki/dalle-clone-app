@@ -2,6 +2,7 @@
 
   "compilerOptions": {
     "esModuleInterop": true,
+    "module": "NodeNext",
     "moduleResolution": "nodenext"
   },
   "ts-node": {
