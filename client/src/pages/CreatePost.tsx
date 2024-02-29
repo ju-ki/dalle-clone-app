@@ -30,7 +30,6 @@ export const CreatePost = () => {
         setForm({...form, photo: `data:image/jpeg:base64.${data.photo}`});
       } catch(error) {
         console.log(error);
-        
       }finally{
         setGeneratingImg(false);
       }
@@ -39,9 +38,48 @@ export const CreatePost = () => {
     }
   }
 
-  const handleSubmit = () => {
+  const onChangeFile = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const reader = new FileReader();
+    if (file) {
+        // Base64エンコーディングされたデータURLとしてファイルを読み込む
+        reader.readAsDataURL(file);
+        reader.onload = function(event) {
+            const base64String = reader.result;
+            // Base64エンコードされたデータURLをフォームの状態に設定
+            setForm({ ...form, photo: base64String });
+        };
 
+        reader.onerror = function(event) {
+            console.error("File could not be read! Code " + reader.error.code);
+        };
+    }
   }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (form.photo && form.prompt) {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/post', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ ...form }),
+            });
+            await response.json();
+            navigate('/');
+        } catch (error) {
+            alert(error);
+        } finally {
+            setLoading(false);
+        }
+    } else {
+        alert("Please enter a photo and prompt");
+    }
+}
+
   const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
   }
@@ -69,7 +107,7 @@ export const CreatePost = () => {
             name="name"
             placeholder="test"
             value={form.name}
-            handleChange={() => handleChange}
+            handleChange={handleChange}
           />
           <FormField
             labelName="Prompt"
@@ -81,6 +119,9 @@ export const CreatePost = () => {
             isSurpriseMe
             handleSurpriseMe={handleSurpriseMe}
           />
+          <div className="mt-5">
+            <input type="file" className="bg-gray-50" onChange={onChangeFile}/>
+          </div>
 
           <div
             className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
