@@ -13,6 +13,7 @@ export const CreatePost = () => {
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
 
+
   const generateImage = async() => {
     if(form.prompt){
       try {
@@ -68,8 +69,9 @@ export const CreatePost = () => {
               },
               body: JSON.stringify({ ...form }),
             });
-            await response.json();
-            navigate('/');
+            const data = await response.json();
+            console.log(data);
+            // navigate('/');
         } catch (error) {
             alert(error);
         } finally {
