@@ -3,9 +3,13 @@ import { preview } from "../assets"
 import {getRandomPrompt} from "../utils";
 import React, { useState } from "react";
 import { FormField, Loader } from "../components";
+import { FormProps } from "../assets/types/types";
+
+
+
 export const CreatePost = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormProps>({
     name:"",
     prompt:"",
     photo:""
@@ -45,14 +49,18 @@ export const CreatePost = () => {
     if (file) {
         // Base64エンコーディングされたデータURLとしてファイルを読み込む
         reader.readAsDataURL(file);
-        reader.onload = function(event) {
-            const base64String = reader.result;
+        reader.onload = function() {
+          const base64String:string | null = reader.result as string | null;
+          if(base64String) {
             // Base64エンコードされたデータURLをフォームの状態に設定
             setForm({ ...form, photo: base64String });
+            } else {
+              alert("Error");
+            }
         };
 
-        reader.onerror = function(event) {
-            console.error("File could not be read! Code " + reader.error.code);
+        reader.onerror = function() {
+            console.error("File could not be read! Code " + reader.error);
         };
     }
   }
@@ -71,7 +79,7 @@ export const CreatePost = () => {
             });
             const data = await response.json();
             console.log(data);
-            // navigate('/');
+            navigate('/');
         } catch (error) {
             alert(error);
         } finally {

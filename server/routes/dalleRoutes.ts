@@ -1,10 +1,7 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import * as dotenv from 'dotenv';
 import OpenAI from 'openai';
-import {v2 as cloudinary} from 'cloudinary';
-
-import Post from "../mongodb/models/post.js";
-import { error } from 'console';
+import { IPrompt } from '../types/types.js';
 
 dotenv.config();
 
@@ -14,14 +11,14 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-router.route('/').get((req, res) => {
+router.route('/').get((req:Request, res:Response):void => {
     res.send('Hello DALLE WORLD');
 })
 
 
-router.route('/').post(async (req, res) => {
+router.route('/').post(async (req:Request, res:Response):Promise<void> => {
     try {
-        const { prompt} = req.body;
+        const { prompt} = req.body as IPrompt;
         const apiResponse = await openai.images.generate({
             prompt,
             n:1,

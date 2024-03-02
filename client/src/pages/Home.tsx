@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import { Loader, Card, FormField } from '../components'
+import { CardProps, PostProps } from '../assets/types/types';
 
-const RenderCards = ({data, title}) => {
+
+
+const RenderCards = ({data, title}: CardProps) => {
   if(data?.length > 0) {
-    return data.map((post) => <Card key={post._id} {...post}/>)
+    return data.map((post:PostProps) => <Card key={post._id} {...post}/>)
   }
   return (
     <h2 className='mt-5 font-bold text-[#6449ff] text0xl uppercase'>{title}</h2>
@@ -12,10 +15,10 @@ const RenderCards = ({data, title}) => {
 
 export const Home = () => {
   const [loading, setLoading] = useState(false);
-  const [allPosts, setAllPosts] = useState(null);
+  const [allPosts, setAllPosts] = useState<PostProps[]>([]);
   const [searchText, setSearchText] = useState("");
-  const [searchTimeout, setSearchTimeout] = useState(null);
-  const [searchResult, setSearchedResults] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState<number>(0);
+  const [searchResult, setSearchedResults] = useState<PostProps[]>([]);
 
   useEffect(() => {
     async function fetchPosts() {
@@ -39,13 +42,13 @@ export const Home = () => {
     fetchPosts();
   }, []);
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     clearTimeout(searchTimeout);
     setSearchText(e.target.value);
 
     setSearchTimeout(
       setTimeout(() => {
-        const searchResult = allPosts?.filter((item) => item.name.toLowerCase().includes(searchText.toLowerCase()) || item.prompt.toLowerCase().includes(searchText.toLowerCase()));
+        const searchResult: PostProps[] = allPosts.filter((item:PostProps) => item.name.toLowerCase().includes(searchText.toLowerCase()) || item.prompt.toLowerCase().includes(searchText.toLowerCase()));
         setSearchedResults(searchResult);
       }, 500),
     );

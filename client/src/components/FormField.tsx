@@ -1,13 +1,6 @@
-type FormFieldProps = {
-  labelName:string;
-  type:string;
-  name:string;
-  placeholder:string;
-  value:string;
-  isSurpriseMe?:boolean;
-  handleChange?: () => void;
-  handleSurpriseMe?: () => void;
-}
+import { FormFieldProps } from "../assets/types/types";
+
+
 
 const FormField = ({
   labelName,
